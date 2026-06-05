@@ -10,6 +10,8 @@ async function loadCountries() {
       "https://restcountries.com/v3.1/all?fields=name,capital,currencies,languages,region,flags,population,area,latlng"
     );
 
+    
+
     // ✅ **Convert response into JSON format**
     let data = await response.json();
 
