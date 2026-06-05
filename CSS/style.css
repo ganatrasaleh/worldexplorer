@@ -1,0 +1,235 @@
+.hero-image {
+  background-image: url("../images/worldmap5.jpg");
+  height: 60vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  position: relative;
+}
+
+.hero-overlay {
+  background: rgba(0, 0, 0, 0.5);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero-text {
+  color: white;
+  padding: 20px;
+}
+
+.hero-text h1 {
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.hero-text p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.hero-text .btn {
+  padding: 12px 25px;
+  font-size: 1rem;
+  border-radius: 30px; /* rounded button */
+  transition: 0.3s ease; /* smooth hover */
+}
+
+/* Your existing hover (keep it) */
+.hero-text .btn:hover {
+  background-color: #ffc107;
+  color: black;
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* NEW: tooltip setup */
+.search-btn {
+  position: relative;
+}
+
+/* Hidden text */
+.search-btn::after {
+  content: "Search the country";
+  position: absolute;
+  bottom: -35px; /* position below button */
+  left: 50%;
+  transform: translateX(-50%);
+  background: black;
+  color: white;
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.3s;
+  white-space: nowrap;
+}
+
+/* Show on hover */
+.search-btn:hover::after {
+  opacity: 1;
+}
+.search-btn::after {
+  transform: translateX(-50%) translateY(10px);
+}
+
+.search-btn:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* About us page */
+.about-container {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  padding: 50px 0;
+}
+
+/* Left side image */
+.aboutus-img {
+  flex: 1;
+  height: auto;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.aboutus-img img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.aboutus-img:hover {
+  transform: scale(1.05);
+}
+
+/* Right side text */
+.aboutus-content {
+  flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .about-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .aboutus-img {
+    width: 100%;
+  }
+}
+
+#aboutus .aboutus-content h2 {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+#aboutus .aboutus-content p {
+  font-size: 18px;
+  line-height: 1.8;
+  text-align: justify;
+  margin-bottom: 10px;
+}
+
+#aboutus a {
+  color: #703e04;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+#aboutus a:hover {
+  color: #f0f9ff;
+  text-decoration: none;
+  background-color: #444444;
+}
+
+/* Contact us page CSS */
+.contact-container {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  padding: 40px 0;
+}
+
+.contactus-img,
+.form-wrapper {
+  flex: 1;
+}
+
+.contactus-img img {
+  width: 80%;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.contactus-img img:hover {
+  transform: scale(1.05);
+}
+
+.form-wrapper {
+  max-width: 500px;
+}
+
+@media (max-width: 768px) {
+  .contact-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .form-wrapper {
+    max-width: 100%;
+  }
+}
+
+.form-wrapper form {
+  width: 100%;
+}
+
+.form-label {
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.form-control {
+  border-radius: 8px;
+}
+
+/* Page background image */
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-image: url("../images/worldmap4.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Very light overlay */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.85); /* VERY LIGHT */
+  z-index: -1;
+}
+
+/* Seearch page */
+#countryInfo {
+  max-width: 700px;
+  margin: auto;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+}
+
+h3 {
+  color: #703e04;
+}
