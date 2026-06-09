@@ -1,121 +1,233 @@
-// ✅ **Store all countries data globally**
-let countriesData = [];
+/**
+ * ==========================================
+ * **COUNTRY CLASS (OOP)**
+ * Represents a country object
+ * ==========================================
+ */
+class Country {
+  constructor(name, capital, region, population) {
+    this.name = name;
+    this.capital = capital;
+    this.region = region;
+    this.population = population;
+  }
 
-
-// ✅ **Function to fetch countries from API**
-async function loadCountries() {
-  try {
-    // ✅ **Fetch data from REST Countries API**
-    const response = await fetch(
-      "https://restcountries.com/v3.1/all?fields=name,capital,currencies,languages,region,flags,population,area,latlng"
-    );
-
-    
-
-    // ✅ **Convert response into JSON format**
-    let data = await response.json();
-
-    // ✅ **Sort countries alphabetically (A–Z)**
-    data.sort((a, b) => a.name.common.localeCompare(b.name.common));
-
-    // ✅ **Save data globally so we can use it later**
-    countriesData = data;
-
-    // ✅ **Fill dropdown menu with country names**
-    populateDropdown(data);
-
-  } catch (error) {
-    // ✅ **Handle errors (important for debugging)**
-    console.log("Error loading countries:", error);
+  getSummary() {
+    return `${this.name} is in ${this.region} and has population ${this.population}`;
   }
 }
 
+/**
+ * **GLOBAL DATA STORAGE**
+ */
+let countriesData = [];
 
-// ✅ **Function to populate dropdown list**
+/**
+ * ==========================================
+ * **LOAD COUNTRIES FROM API**
+ * ==========================================
+ */
+async function loadCountries() {
+  const select = document.getElementById("countrySelect");
+
+  if (select) {
+    select.innerHTML = "<option>Loading countries...</option>";
+  }
+
+  try {
+    const response = await fetch(
+      "https://restcountries.com/v3.1/all?fields=name,capital,currencies,languages,region,flags,population,area"
+    );
+
+    const data = await response.json();
+
+    // Sort countries alphabetically
+    data.sort((a, b) =>
+      a.name.common.localeCompare(b.name.common)
+    );
+
+    countriesData = data;
+
+    populateDropdown(data);
+
+  } catch (error) {
+    console.log("Error loading countries:", error);
+
+    if (select) {
+      select.innerHTML = "<option>Error loading countries</option>";
+    }
+  }
+}
+
+/**
+ * ==========================================
+ * **FILL DROPDOWN WITH COUNTRIES**
+ * ==========================================
+ */
 function populateDropdown(data) {
-  const countrySelect = document.getElementById("countrySelect");
+  const select = document.getElementById("countrySelect");
+  if (!select) return;
+
+  select.innerHTML =
+    '<option value="" disabled selected>-- Select a country --</option>';
 
   data.forEach((country) => {
-    // ✅ **Create <option> element for each country**
     const option = document.createElement("option");
-
-    option.value = country.name.common;      // ✅ **Set value**
-    option.textContent = country.name.common; // ✅ **Set visible text**
-
-    // ✅ **Add option into dropdown**
-    countrySelect.appendChild(option);
+    option.value = country.name.common;
+    option.textContent = country.name.common;
+    select.appendChild(option);
   });
 }
 
-
-// ✅ **Function to display selected country details**
+/**
+ * ==========================================
+ * **SHOW COUNTRY DETAILS**
+ * ==========================================
+ */
 function showCountry() {
-  // ✅ **Get selected country name from dropdown**
-  const selected = document.getElementById("countrySelect").value;
+  const selected = document.getElementById("countrySelect")?.value;
 
-  // ✅ **Find matching country from stored data**
+  if (selected) {
+    localStorage.setItem("selectedCountry", selected);
+  }
+
   const country = countriesData.find(
     (c) => c.name.common === selected
   );
 
-  // ✅ **If no country selected, show alert**
   if (!country) {
-    alert("Please select a country");
+    const info = document.getElementById("countryInfo");
+    if (info) {
+      info.classList.remove("d-none");
+      info.innerHTML = `
+        <div class="text-center text-danger">
+          <h4>Error</h4>
+          <p>Please select a country.</p>
+        </div>
+      `;
+    }
     return;
   }
 
-  // ✅ ✅ **Display BASIC INFORMATION**
+  // ✅ OOP object
+  const countryObj = new Country(
+    country.name.common,
+    country.capital ? country.capital[0] : "N/A",
+    country.region,
+    country.population
+  );
 
-  document.getElementById("countryName").textContent = country.name.common;
+  console.log(countryObj.getSummary());
 
-  document.getElementById("countryDescription").textContent =
-    `This country is located in ${country.region}.`;
+  // ✅ SAFE DOM updates (NO ERRORS)
+  const nameEl = document.getElementById("countryName");
+  if (nameEl) nameEl.textContent = country.name.common;
 
-  document.getElementById("capital").textContent = country.capital
-    ? country.capital[0]
-    : "N/A";
+  const descEl = document.getElementById("countryDescription");
+  if (descEl)
+    descEl.textContent = `This country is located in ${country.region}.`;
 
-  document.getElementById("population").textContent =
-    country.population.toLocaleString();
+  const capEl = document.getElementById("capital");
+  if (capEl)
+    capEl.textContent = country.capital ? country.capital[0] : "N/A";
 
-  document.getElementById("continent").textContent = country.region;
+  const popEl = document.getElementById("population");
+  if (popEl)
+    popEl.textContent = country.population.toLocaleString();
 
+  const contEl = document.getElementById("continent");
+  if (contEl) contEl.textContent = country.region;
 
-  // ✅ ✅ **Display LANGUAGES**
   const languages = country.languages
     ? Object.values(country.languages).join(", ")
     : "N/A";
 
-  document.getElementById("languages").textContent = languages;
+  const langEl = document.getElementById("languages");
+  if (langEl) langEl.textContent = languages;
 
-
-  // ✅ ✅ **Display CURRENCY**
   const currency = country.currencies
     ? Object.values(country.currencies)
         .map((c) => `${c.name} (${c.symbol})`)
         .join(", ")
     : "N/A";
 
-  document.getElementById("currency").textContent = currency;
+  const currEl = document.getElementById("currency");
+  if (currEl) currEl.textContent = currency;
 
-
-  // ✅ ✅ **Display FLAG IMAGE**
   const flagImg = document.getElementById("flag");
+  if (flagImg) {
+    flagImg.src = country.flags?.png || "";
+    flagImg.alt = `Flag of ${country.name.common}`;
+  }
 
-  flagImg.src = country.flags?.png || country.flags?.svg || "";  // ✅ **Set image URL**
-  flagImg.alt = `Flag of ${country.name.common}`;                // ✅ **Alt text for accessibility**
+  const areaEl = document.getElementById("area");
+  if (areaEl)
+    areaEl.textContent = country.area
+      ? country.area.toLocaleString() + " km²"
+      : "N/A";
 
-
-  // ✅ ✅ **Display COUNTRY AREA**
-  document.getElementById("area").textContent = country.area
-    ? country.area.toLocaleString() + " km²"
-    : "N/A";
-
-
-  // ✅ ✅ **Make country info section visible**
-  document.getElementById("countryInfo").classList.remove("d-none");
+  const info = document.getElementById("countryInfo");
+  if (info) info.classList.remove("d-none");
 }
 
+/**
+ * ==========================================
+ * **SEARCH FUNCTION**
+ * ==========================================
+ */
+function filterCountries() {
+  const searchValue =
+    document.getElementById("searchInput")?.value.toLowerCase() || "";
 
-// ✅ ✅ **Run the app when page loads**
-loadCountries();
+  const select = document.getElementById("countrySelect");
+  if (!select) return;
+
+  select.innerHTML =
+    '<option value="" disabled selected>-- Select a country --</option>';
+
+  const filtered = countriesData.filter((country) => {
+    const name = country.name.common.toLowerCase();
+    const capital = country.capital?.[0]?.toLowerCase() || "";
+
+    return (
+      name.includes(searchValue) ||
+      capital.includes(searchValue)
+    );
+  });
+
+  filtered.forEach((country) => {
+    const option = document.createElement("option");
+    option.value = country.name.common;
+    option.textContent = country.name.common;
+    select.appendChild(option);
+  });
+
+  // ✅ No results message
+  if (filtered.length === 0) {
+    const option = document.createElement("option");
+    option.textContent = "No results found";
+    option.disabled = true;
+    select.appendChild(option);
+  }
+}
+
+/**
+ * ==========================================
+ * **INITIAL LOAD**
+ * ==========================================
+ */
+window.onload = function () {
+  loadCountries();
+
+  const saved = localStorage.getItem("selectedCountry");
+
+  if (saved) {
+    setTimeout(() => {
+      const select = document.getElementById("countrySelect");
+      if (select) {
+        select.value = saved;
+        showCountry();
+      }
+    }, 500);
+  }
+};
