@@ -112,10 +112,8 @@
                   />
                 </div>
 
-                <!-- ===========================
-                 Gender
-                 ============================== -->
                 <div class="mb-3">
+                  <!-- ===========Gender================= -->
                   <label class="form-label d-block">Gender</label>
 
                   <div class="ms-3 d-flex gap-3 flex-wrap">
@@ -155,8 +153,8 @@
                   </div>
                 </div>
 
-                <!-- Source -->
                 <div class="mb-3">
+                  <!-- Source -->
                   <label class="form-label d-block">
                     Where did you find us?
                   </label>
@@ -203,7 +201,13 @@
                   ></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onclick="submitFeedback()"
+                >
+                  Submit
+                </button>
               </form>
             </div>
           </div>
@@ -291,5 +295,7 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+     <script src="../javascript/javascript.js"></script>
   </body>
 </html>

@@ -48,9 +48,15 @@ async function loadCountries() {
   }
 
   try {
-    const response = await fetch(
-      "https://restcountries.com/v3.1/all"
-    );
+   
+
+
+const response = await fetch(
+    'https://api.restcountries.com/countries/v5?pretty=1',
+    { headers: { 'Authorization': 'Bearer rc_live_77e6f1619c54438db3b6e4db90202905' } }
+);
+
+
 
     if (!response.ok) {
       throw new Error("Failed to load country data");
@@ -298,3 +304,44 @@ window.addEventListener("load", async () => {
   }
 
 });
+
+/**
+ * ==========================================
+ * FEEDBACK / CONTACT FORM
+ * ==========================================
+ */
+function submitFeedback() {
+
+  // ✅ Get values from form
+  const name = document.getElementById("name")?.value;
+  const email = document.getElementById("email")?.value;
+  const message = document.getElementById("message")?.value;
+
+  // ✅ Basic validation
+  if (!name || !email || !message) {
+    alert("Please fill all fields.");
+    return;
+  }
+
+  // ✅ Create feedback string
+  const feedback = `
+    Name: ${name}
+    Email: ${email}
+    Message: ${message}
+    ---------------------------
+  `;
+
+  // ✅ Store in localStorage (acts like data file)
+  let existingData = localStorage.getItem("feedback") || "";
+  localStorage.setItem("feedback", existingData + feedback);
+
+  console.log("Saved Feedback:", feedback);
+
+  // ✅ Show success message
+  alert("Feedback submitted successfully!");
+
+  // ✅ Clear form
+  document.getElementById("name").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("message").value = "";
+}
