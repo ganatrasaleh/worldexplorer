@@ -48,15 +48,9 @@ async function loadCountries() {
   }
 
   try {
-   
-
-
-const response = await fetch(
-    'https://api.restcountries.com/countries/v5?pretty=1',
-    { headers: { 'Authorization': 'Bearer rc_live_77e6f1619c54438db3b6e4db90202905' } }
-);
-
-
+    const response = await fetch(
+      "https://api.allorigins.win/raw?url=https://restcountries.com/v3.1/all",
+    );
 
     if (!response.ok) {
       throw new Error("Failed to load country data");
@@ -67,33 +61,28 @@ const response = await fetch(
     console.log("Countries loaded:", data.length);
 
     // Sort alphabetically
-    data.sort((a, b) =>
-      a.name.common.localeCompare(b.name.common)
-    );
+    data.sort((a, b) => a.name.common.localeCompare(b.name.common));
 
     countriesData = data;
 
     // Populate dropdown
     if (select) {
-      select.innerHTML =
-        `<option value="" disabled selected>
+      select.innerHTML = `<option value="" disabled selected>
           -- Select a country --
         </option>`;
 
-      data.forEach(country => {
+      data.forEach((country) => {
         const option = document.createElement("option");
         option.value = country.name.common;
         option.textContent = country.name.common;
         select.appendChild(option);
       });
     }
-
   } catch (error) {
     console.error("API ERROR:", error);
 
     if (select) {
-      select.innerHTML =
-        "<option>Error loading countries</option>";
+      select.innerHTML = "<option>Error loading countries</option>";
     }
   }
 }
@@ -104,7 +93,6 @@ const response = await fetch(
  * ==========================================
  */
 function showCountry() {
-
   const selected = getElement("countrySelect")?.value;
 
   if (!selected) {
@@ -113,9 +101,7 @@ function showCountry() {
 
   localStorage.setItem("selectedCountry", selected);
 
-  const country = countriesData.find(
-    c => c.name.common === selected
-  );
+  const country = countriesData.find((c) => c.name.common === selected);
 
   if (!country) {
     return;
@@ -126,7 +112,7 @@ function showCountry() {
     country.name.common,
     country.capital?.[0] || "N/A",
     country.region,
-    country.population
+    country.population,
   );
 
   console.log(countryObj.getSummary());
@@ -139,19 +125,13 @@ function showCountry() {
   };
 
   update("countryName", country.name.common);
-  update(
-    "countryDescription",
-    `This country is located in ${country.region}.`
-  );
+  update("countryDescription", `This country is located in ${country.region}.`);
 
-  update("capital",
-    country.capital?.[0] || "N/A");
+  update("capital", country.capital?.[0] || "N/A");
 
-  update("population",
-    country.population.toLocaleString());
+  update("population", country.population.toLocaleString());
 
-  update("continent",
-    country.region);
+  update("continent", country.region);
 
   // Languages
   const languages = country.languages
@@ -160,25 +140,17 @@ function showCountry() {
 
   update("languages", languages);
 
-
   // Currency
   const currency = country.currencies
     ? Object.values(country.currencies)
-        .map(c => c.name)
+        .map((c) => c.name)
         .join(", ")
     : "N/A";
 
   update("currency", currency);
 
-
   // Area
-  update(
-    "area",
-    country.area
-      ? `${country.area.toLocaleString()} km²`
-      : "N/A"
-  );
-
+  update("area", country.area ? `${country.area.toLocaleString()} km²` : "N/A");
 
   // Flag
   const flag = getElement("flag");
@@ -188,7 +160,6 @@ function showCountry() {
     flag.alt = `Flag of ${country.name.common}`;
   }
 
-
   // Show information card
   const info = getElement("countryInfo");
 
@@ -197,21 +168,17 @@ function showCountry() {
   }
 }
 
-
 /**
  * ==========================================
  * Search / Filter Countries
  * ==========================================
  */
 function filterCountries() {
-
   if (countriesData.length === 0) {
     return;
   }
 
-  const search =
-    getElement("searchInput")
-    ?.value.toLowerCase() || "";
+  const search = getElement("searchInput")?.value.toLowerCase() || "";
 
   const select = getElement("countrySelect");
 
@@ -219,61 +186,38 @@ function filterCountries() {
     return;
   }
 
-
-  select.innerHTML =
-    `<option value="" disabled selected>
+  select.innerHTML = `<option value="" disabled selected>
       -- Select a country --
     </option>`;
 
+  const filtered = countriesData.filter((country) => {
+    const name = country.name.common.toLowerCase();
 
-  const filtered = countriesData.filter(country => {
+    const capital = country.capital?.[0]?.toLowerCase() || "";
 
-    const name =
-      country.name.common.toLowerCase();
-
-    const capital =
-      country.capital?.[0]
-      ?.toLowerCase() || "";
-
-    return (
-      name.includes(search) ||
-      capital.includes(search)
-    );
-
+    return name.includes(search) || capital.includes(search);
   });
 
+  filtered.forEach((country) => {
+    const option = document.createElement("option");
 
-  filtered.forEach(country => {
+    option.value = country.name.common;
 
-    const option =
-      document.createElement("option");
-
-    option.value =
-      country.name.common;
-
-    option.textContent =
-      country.name.common;
+    option.textContent = country.name.common;
 
     select.appendChild(option);
-
   });
 
-
   if (filtered.length === 0) {
+    const option = document.createElement("option");
 
-    const option =
-      document.createElement("option");
-
-    option.textContent =
-      "No results found";
+    option.textContent = "No results found";
 
     option.disabled = true;
 
     select.appendChild(option);
   }
-
 }
-
 
 /**
  * ==========================================
@@ -281,28 +225,19 @@ function filterCountries() {
  * ==========================================
  */
 window.addEventListener("load", async () => {
-
   await loadCountries();
 
-  const savedCountry =
-    localStorage.getItem("selectedCountry");
-
+  const savedCountry = localStorage.getItem("selectedCountry");
 
   if (savedCountry) {
-
-    const select =
-      getElement("countrySelect");
+    const select = getElement("countrySelect");
 
     if (select) {
-
       select.value = savedCountry;
 
       showCountry();
-
     }
-
   }
-
 });
 
 /**
@@ -311,7 +246,6 @@ window.addEventListener("load", async () => {
  * ==========================================
  */
 function submitFeedback() {
-
   // ✅ Get values from form
   const name = document.getElementById("name")?.value;
   const email = document.getElementById("email")?.value;
